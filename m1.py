@@ -12,7 +12,7 @@ def load_images_from_folder(folder):
         img_path = os.path.join(folder, filename)
         img = cv2.imread(img_path)
         if img is not None:
-            img = cv2.resize(img, (32, 32))  # Ajusta el tamaño de la imagen según tus necesidades
+            img = cv2.resize(img, (32, 32))  # Ajusta el tamaño de la imagen
             images.append(img)
             labels.append(filename.split('_')[0])  # Suponiendo que el nombre del archivo es la etiqueta
     return np.array(images), np.array(labels)
