@@ -3,6 +3,9 @@ import tensorflow as tf
 from sklearn.model_selection import train_test_split
 import cv2
 import os
+from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # Función para cargar y procesar las imágenes
 def load_images_from_folder(folder):
@@ -49,8 +52,34 @@ model.compile(optimizer='adam',
               metrics=['accuracy'])
 
 # Entrenar el modelo
-model.fit(train_images, train_labels, epochs=50, batch_size=64, validation_data=(test_images, test_labels))
+model.fit(train_images, train_labels, epochs=50, batch_size=32, validation_data=(test_images, test_labels))
 
 # Evaluar el modelo
 test_loss, test_acc = model.evaluate(test_images, test_labels)
 print('Test accuracy:', test_acc)
+
+# Predicciones en el conjunto de prueba
+predictions = model.predict(test_images)
+predicted_labels = np.argmax(predictions, axis=1)
+
+# Matriz de confusión
+conf_matrix = confusion_matrix(test_labels, predicted_labels)
+
+# Métricas de evaluación
+accuracy = accuracy_score(test_labels, predicted_labels)
+precision = precision_score(test_labels, predicted_labels, average='weighted')
+recall = recall_score(test_labels, predicted_labels, average='weighted')
+f1 = f1_score(test_labels, predicted_labels, average='weighted')
+
+print("Accuracy:", accuracy)
+print("Precision:", precision)
+print("Recall:", recall)
+print("F1 Score:", f1)
+
+# Graficar la matriz de confusión
+plt.figure(figsize=(10, 8))
+sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", xticklabels=label_to_idx.keys(), yticklabels=label_to_idx.keys())
+plt.xlabel('Predicted labels')
+plt.ylabel('True labels')
+plt.title('Confusion Matrix')
+plt.show()
